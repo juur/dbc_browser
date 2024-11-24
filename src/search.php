@@ -1,7 +1,6 @@
 <?php
 require("database.php");
 require("spell_defines.php");
-mysql_select_db($config['dbc'], $db_conn);
 
 #read skip value (page offset in search results)
 $skip = 0;
@@ -34,8 +33,8 @@ foreach ($_GET as $key => $value)
     $tval = trim($value);
     if ($tval == '')
         continue;
-    $search_field = mysql_real_escape_string($key, $db_conn);
-    $search_term = mysql_real_escape_string($tval, $db_conn);
+    $search_field = mysqli_real_escape_string($db_conn, $key);
+    $search_term = mysqli_real_escape_string($db_conn, $tval);
     if ($query_cond != '')
         $query_cond .= ' AND ';
     #use substring search for text fields
@@ -55,8 +54,8 @@ if ($query_cond == '') die('Error: Missing search parameters');
 $query = "SELECT * FROM Spell WHERE $query_cond LIMIT $skip, $config[results_per_page];";
 echo "$query\n";
 #this is only to get the total row count
-$result = mysql_query("SELECT COUNT(*) FROM Spell WHERE $query_cond;", $db_conn) or die(mysql_error());
-$row = mysql_fetch_row($result);
+$result = mysqli_query($db_conn, "SELECT COUNT(*) FROM Spell WHERE $query_cond;") or die(mysqli_error());
+$row = mysqli_fetch_row($result);
 $total = $row[0];
 if ($total > 0)
 {
@@ -64,8 +63,8 @@ if ($total > 0)
     $last = $skip + $config['results_per_page'];
     if ($last > $total) $last = $total;
     echo "<p>Showing results $first - $last (total $total spells)</p>\n";
-    $result = mysql_query($query, $db_conn) or die(mysql_error());
-    $num_rows = mysql_num_rows($result);
+    $result = mysqli_query($db_conn, $query) or die(mysqli_error());
+    $num_rows = mysqli_num_rows($result);
 }
 else
     echo "<p>No spells found</p>\n";
@@ -85,7 +84,7 @@ if ($num_rows > 0)
 </tr>
 <?php
     $row = 0;
-    while ($spell_info = mysql_fetch_assoc($result))
+    while ($spell_info = mysqli_fetch_assoc($result))
     {
         echo "<tr class=\"row".($row%2)."\"><td class=\"value\"><a href=\"spell.php?id=$spell_info[Id]\">$spell_info[Id]</a></td>";
         echo "<td class=\"field\">$spell_info[SpellName]</td>";

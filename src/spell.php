@@ -20,7 +20,7 @@ if ($num_rows == 0)
     echo "Spell $spell_id not found.\n";
 else
 {
-    $spell_info = mysql_fetch_object($result);
+    $spell_info = mysqli_fetch_object($result);
     echo "<h2>Spell $spell_id: $spell_info->SpellName";
     if ($spell_info->Rank != "") echo " ($spell_info->Rank)";
     echo "</h2>\n";

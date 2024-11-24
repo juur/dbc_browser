@@ -104,7 +104,7 @@ function print_dbc_for_entry($table, $entry)
     list ($res, $nr) = query_dbc($table, $entry);
     if ($nr != 0)
     {
-        $entry = mysql_fetch_assoc($res);
+        $entry = mysqli_fetch_assoc($res);
         $index = 0;
         foreach ($entry as $key => $value)
         {
